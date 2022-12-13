@@ -19,4 +19,7 @@ public class Line {
     }
 
 
+    public void showText() {
+        System.out.println(text);
+    }
 }
