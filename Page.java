@@ -11,7 +11,7 @@ public class Page {
 
 
     public Page(String line, int pageNumber) {
-        firstLine = new Line(line);
+        firstLine = new Line(line, ++numOfLines);
         currentLine = firstLine;
         nextPage = null;
         prevPage = null;
@@ -19,10 +19,10 @@ public class Page {
     }
 
     public void addLine(String textLine) {
-        Line newLine = new Line(textLine);
+        Line newLine = new Line(textLine, ++numOfLines);
         currentLine.setNextLine(newLine);
         currentLine = newLine;
-        numOfLines++;
+//        numOfLines++;
     }
 
     public void showLines(int n) {
@@ -76,7 +76,7 @@ public class Page {
     }
 
     public void insertLine(String str, int n) {
-        Line newLine = new Line(str);
+        Line newLine = new Line(str, ++numOfLines);
         currentLine = firstLine;
         if(n==1){
             newLine.setNextLine(firstLine);
@@ -89,7 +89,7 @@ public class Page {
             newLine.setNextLine(currentLine.getNextLine());
             currentLine.setNextLine(newLine);
         }
-        numOfLines++;
+//        numOfLines++;
     }
 
     public void removeLine(int n) {
@@ -105,7 +105,7 @@ public class Page {
     }
 
     public void replaceLine(int n, String str) {
-        Line newLine = new Line(str);
+        Line newLine = new Line(str, n);
         if(n==1){
             newLine.setNextLine(firstLine.getNextLine());
             firstLine = newLine;
@@ -192,5 +192,17 @@ public class Page {
         currentLine = firstLine;
         currentLine.setText("vv");
         firstLine.showText();
+    }
+
+    public void find(String str) {
+        currentLine = firstLine;
+        System.out.println("Page " + pageNumber + ":");
+        while(currentLine!=null){
+            if(currentLine.getText().contains(str)){
+                System.out.println("\t");
+            }
+            currentLine = currentLine.getNextLine();
+        }
+
     }
 }
