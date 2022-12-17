@@ -199,7 +199,7 @@ public class Page {
         System.out.println("Page " + pageNumber + ":");
         while(currentLine!=null){
             if(currentLine.getText().contains(str)){
-                System.out.println("\t");
+                System.out.println("\tLine " + currentLine.getLineNumber() + ": " + currentLine.getText());
             }
             currentLine = currentLine.getNextLine();
         }

@@ -33,6 +33,10 @@ public class Line implements Cloneable{
         text=s;
     }
 
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();

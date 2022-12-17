@@ -13,10 +13,8 @@ public class Editor {
 
         parse("in.txt");
         save("out.text");
-        nextPage();
-        swap(4,1);
-        save("out.text");
-//        replace(1, "ss");
+        find("a1");
+        //        replace(1, "ss");
 //        replace(2, "ss");
 //        replace(5, "ss");
 //        save("out.text");
@@ -124,6 +122,13 @@ public class Editor {
     }
     public void swap(int m, int n){
         currentPage.swapLines(m,n);
+    }
+    public void find(String str){
+        currentPage = firstPage;
+        while (currentPage!=null){
+            currentPage.find(str);
+            currentPage = currentPage.getNextPage();
+        }
     }
     private void addPage(String firstLine){
         Page newPage = new Page(firstLine, currentPage.getPageNumber()+1);
