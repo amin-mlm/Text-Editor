@@ -20,9 +20,13 @@ public class Editor implements Serializable{
         Scanner sc = new Scanner(System.in);
         if(sc.nextLine().equals("1")){
             append("aaaaaaaaaaaaaa");
+            remove(4);
             save("out.text");
         }
         if(sc.nextLine().equals("2")){
+            undo();
+            insert("bbbbbbbbbbb",6 );
+            undo();
             undo();
             save("out.text");
         }
@@ -75,9 +79,11 @@ public class Editor implements Serializable{
             return currentPage.getPageNumber();
     }
     public void nextPage(){
+        undos.push(deepClone(this));
         currentPage = currentPage.getNextPage();
     }
     public void previousPage(){
+        undos.push(deepClone(this));
         currentPage = currentPage.getPrevPage();
     }
     public int lines(){
@@ -91,15 +97,19 @@ public class Editor implements Serializable{
         currentPage.appendText(str);
     }
     public void insert(String str, int n){
+        undos.push(deepClone(this));
         currentPage.insertLine(str, n);
     }
     public void remove(int n){
+        undos.push(deepClone(this));
         currentPage.removeLine(n);
     }
     public void replace(int n, String str){
+        undos.push(deepClone(this));
         currentPage.replaceLine(n, str);
     }
     public void swap(int m, int n){
+        undos.push(deepClone(this));
         currentPage.swapLines(m,n);
     }
     public void find(String str){
@@ -110,6 +120,7 @@ public class Editor implements Serializable{
         }
     }
     public void findAndReplace(String s, String t){
+        undos.push(deepClone(this));
         currentPage = firstPage;
         while (currentPage!=null){
             currentPage.findAndReplace(s,t);
