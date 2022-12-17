@@ -18,8 +18,8 @@ public class Page {
         this.pageNumber = pageNumber;
     }
 
-    public void addLine(String text) {
-        Line newLine = new Line(text);
+    public void addLine(String textLine) {
+        Line newLine = new Line(textLine);
         currentLine.setNextLine(newLine);
         currentLine = newLine;
         numOfLines++;
@@ -66,7 +66,8 @@ public class Page {
     public void appendText(String str) {
         currentLine = firstLine;
         while(currentLine.nextLine!=null)
-            currentLine = currentLine.getNextLine(); //now currentLine points to the last line
+            currentLine = currentLine.getNextLine();
+        //now currentLine points to the last line
         Scanner textScanner = new Scanner(str);
         while(textScanner.hasNextLine()){
             String textLine = textScanner.nextLine();
@@ -74,13 +75,12 @@ public class Page {
         }
     }
 
-    public void insertText(String str, int n) {
+    public void insertLine(String str, int n) {
         Line newLine = new Line(str);
         currentLine = firstLine;
         if(n==1){
             newLine.setNextLine(firstLine);
             firstLine = newLine;
-            numOfLines++;
         }
         else{
             for (int i = 0; i < n - 2; i++) {
@@ -89,6 +89,7 @@ public class Page {
             newLine.setNextLine(currentLine.getNextLine());
             currentLine.setNextLine(newLine);
         }
+        numOfLines++;
     }
 
     public void removeLine(int n) {
@@ -101,5 +102,95 @@ public class Page {
             currentLine.setNextLine(currentLine.getNextLine().getNextLine());
         }
         numOfLines--;
+    }
+
+    public void replaceLine(int n, String str) {
+        Line newLine = new Line(str);
+        if(n==1){
+            newLine.setNextLine(firstLine.getNextLine());
+            firstLine = newLine;
+        }
+        else{
+            currentLine = firstLine;
+            for (int i = 0; i < n-2; i++) {
+                currentLine = currentLine.getNextLine();
+            }
+            newLine.setNextLine(currentLine.getNextLine().getNextLine());
+            currentLine.setNextLine(newLine);
+        }
+    }
+
+    public void swapLines(int m, int n) {
+        //make m<n
+        if(n<m){
+            int temp = m;
+            m = n;
+            n = temp;
+        }
+
+        //find line n
+        Line lineBeforeN = firstLine;
+        for (int i = 0; i < n-2; i++) {
+            lineBeforeN = lineBeforeN.getNextLine();
+        }
+        Line lineN = lineBeforeN.getNextLine();
+        Line lineAfterN = lineN.getNextLine();
+
+        if(m==1){
+            Line lineM = null;
+            try {
+                lineM = (Line) firstLine.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            if(n-m==1){
+                firstLine = lineN;
+                lineN.setNextLine(lineM);
+                lineM.setNextLine(lineAfterN);
+            }
+            else{
+                lineN.setNextLine(lineM.getNextLine());
+                firstLine = lineN;
+                lineBeforeN.setNextLine(lineM);
+                lineM.setNextLine(lineAfterN);
+            }
+        }
+        else {
+            Line lineBeforeM = firstLine;
+            for (int i = 0; i < m-2; i++) {
+                lineBeforeM = lineBeforeM.getNextLine();
+            }
+            Line lineM = lineBeforeM.getNextLine();
+
+            if(n-m==1){
+                lineBeforeM.setNextLine(lineN);
+                lineN.setNextLine(lineM);
+                lineM.setNextLine(lineAfterN);
+            }else{
+                lineN.setNextLine(lineM.getNextLine());
+                lineBeforeM.setNextLine(lineN);
+
+                lineM.setNextLine(lineAfterN);
+                lineBeforeN.setNextLine(lineM);
+            }
+        }
+        System.out.println(firstLine.getText());
+    }
+
+    void pp(){ //for test
+//        try {
+//            currentLine = (Line)firstLine.clone();
+//        } catch (CloneNotSupportedException e) {
+//            e.printStackTrace();
+//        }
+
+
+//        currentLine = new Line(firstLine);
+
+
+        currentLine = firstLine;
+        currentLine.setText("vv");
+        firstLine.showText();
     }
 }

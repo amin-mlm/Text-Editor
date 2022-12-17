@@ -12,7 +12,19 @@ public class Editor {
 //        System.out.println("No any page exists :(");
 
         parse("in.txt");
+        save("out.text");
         save("out.txt");
+        swap(5,4);
+        save("out.text");
+//        replace(1, "ss");
+//        replace(2, "ss");
+//        replace(5, "ss");
+//        save("out.text");
+//        remove(4);
+//        save("out.text");
+//        swap(2,3);
+//        save("out.text");
+//        replace();
 //        remove(1);
 //        remove(2);
 //        remove(1);
@@ -103,16 +115,24 @@ public class Editor {
         currentPage.appendText(str);
     }
     public void insert(String str, int n){
-        currentPage.insertText(str, n);
+        currentPage.insertLine(str, n);
     }
     public void remove(int n){
         currentPage.removeLine(n);
     }
-
+    public void replace(int n, String str){
+        currentPage.replaceLine(n, str);
+    }
+    public void swap(int m, int n){
+        currentPage.swapLines(m,n);
+    }
     private void addPage(String firstLine){
         Page newPage = new Page(firstLine, currentPage.getPageNumber()+1);
         newPage.setPrevPage(currentPage);
         currentPage.setNextPage(newPage);
         currentPage = newPage;
     }
+
+
+    void pp(){currentPage.pp();} //for test
 }
