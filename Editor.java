@@ -13,8 +13,8 @@ public class Editor {
 
         parse("in.txt");
         save("out.text");
-        save("out.txt");
-        swap(5,4);
+        nextPage();
+        swap(4,1);
         save("out.text");
 //        replace(1, "ss");
 //        replace(2, "ss");
@@ -72,7 +72,6 @@ public class Editor {
                 currentPage.addLine(line);
             }
         }
-        currentPage = firstPage; //set current page as first to be valid when "where()" is invoked
     }
 
     public void save(String address) {
@@ -89,10 +88,10 @@ public class Editor {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        currentPage = firstPage; //set current page as first to be valid when "where()" is invoked
     }
 
     public int where(){
+        currentPage = firstPage;
         if(currentPage==null)
             return -1;
         else
