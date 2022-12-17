@@ -205,4 +205,16 @@ public class Page {
         }
 
     }
+
+    public void findAndReplace(String s, String t) {
+        currentLine = firstLine;
+        while(currentLine!=null){
+            if(currentLine.getText().contains(s)){
+                String newStr = currentLine.getText();
+                newStr = newStr.replaceAll(s,t);
+                replaceLine(currentLine.getLineNumber(), newStr);
+            }
+            currentLine = currentLine.getNextLine();
+        }
+    }
 }

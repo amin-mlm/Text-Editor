@@ -13,8 +13,9 @@ public class Editor {
 
         parse("in.txt");
         save("out.text");
-        find("a1");
-        //        replace(1, "ss");
+        save("out.txt");
+        findAndReplace("a1", "ZZ");
+        save("out.text");
 //        replace(2, "ss");
 //        replace(5, "ss");
 //        save("out.text");
@@ -130,12 +131,21 @@ public class Editor {
             currentPage = currentPage.getNextPage();
         }
     }
+    public void findAndReplace(String s, String t){
+        currentPage = firstPage;
+        while (currentPage!=null){
+            currentPage.findAndReplace(s,t);
+            currentPage = currentPage.getNextPage();
+        }
+
+    }
     private void addPage(String firstLine){
         Page newPage = new Page(firstLine, currentPage.getPageNumber()+1);
         newPage.setPrevPage(currentPage);
         currentPage.setNextPage(newPage);
         currentPage = newPage;
     }
+
 
 
     void pp(){currentPage.pp();} //for test
