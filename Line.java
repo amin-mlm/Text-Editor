@@ -1,4 +1,6 @@
-public class Line implements Cloneable{
+import java.io.Serializable;
+
+public class Line implements Serializable {
     String text;
     Line nextLine;
     int lineNumber;
@@ -37,9 +39,13 @@ public class Line implements Cloneable{
         return lineNumber;
     }
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
+    @Override
+    public Line clone() {
+        try {
+            return (Line) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

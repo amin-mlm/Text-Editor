@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class Page {
+public class Page implements Serializable {
     Line firstLine;
     Line currentLine;
     Page nextPage;
@@ -137,12 +138,7 @@ public class Page {
         Line lineAfterN = lineN.getNextLine();
 
         if(m==1){
-            Line lineM = null;
-            try {
-                lineM = (Line) firstLine.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+            Line lineM = firstLine.clone();
 
             if(n-m==1){
                 firstLine = lineN;
@@ -179,19 +175,13 @@ public class Page {
     }
 
     void pp(){ //for test
-//        try {
-//            currentLine = (Line)firstLine.clone();
-//        } catch (CloneNotSupportedException e) {
-//            e.printStackTrace();
-//        }
-
+        currentLine = firstLine.clone();
+        currentLine.setText("vv");
+        firstLine.showText();
 
 //        currentLine = new Line(firstLine);
 
 
-        currentLine = firstLine;
-        currentLine.setText("vv");
-        firstLine.showText();
     }
 
     public void find(String str) {

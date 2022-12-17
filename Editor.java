@@ -1,11 +1,14 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Scanner;
 
-public class Editor {
+import java.io.*;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Editor implements Serializable{
     Page firstPage;
     Page currentPage;
+
+    Stack<Editor> undos = new Stack<>();
+    Stack<Editor> redos = new Stack<>();
 
     public void start() throws FileNotFoundException {
 //        System.out.println("You are in page " + currentPage.getPageNumber());
@@ -13,44 +16,20 @@ public class Editor {
 
         parse("in.txt");
         save("out.text");
-        save("out.txt");
-        findAndReplace("a1", "ZZ");
-        save("out.text");
-//        replace(2, "ss");
-//        replace(5, "ss");
-//        save("out.text");
-//        remove(4);
-//        save("out.text");
-//        swap(2,3);
-//        save("out.text");
-//        replace();
-//        remove(1);
-//        remove(2);
-//        remove(1);
-//        remove(1);
-//        save("out.txt");
-//        remove(1);
-//        remove(1);
-//        nextPage();
-//        remove(2);
-//        previousPage();
-//        remove(1);
-//        save("out.txt");
-//        insert("ggggggggg", 1);
-//        insert("fffffffff", 2);
-//        nextPage();
-//        insert("aaaaaaaa",3);
-//        save("out.txt");
-//        append("aa bb\ncc");
-//        nextPage();
-//        append("dd ff\nee\nvv rr");
-//        save("out.text");
-//        nextPage();
-//        show(3);
 
-//        System.out.println("What Do You Want?");
-//        System.out.println("1.Parse\n2.save\n3.where");
-
+        Scanner sc = new Scanner(System.in);
+        if(sc.nextLine().equals("1")){
+            append("aaaaaaaaaaaaaa");
+            save("out.text");
+        }
+        if(sc.nextLine().equals("2")){
+            undo();
+            save("out.text");
+        }
+        if(sc.nextLine().equals("3")){
+            redo();
+            save("out.text");
+        }
     }
 
     public void parse(String address) throws FileNotFoundException {
@@ -71,8 +50,8 @@ public class Editor {
                 currentPage.addLine(line);
             }
         }
+        currentPage = firstPage;
     }
-
     public void save(String address) {
         String text;
         try(PrintWriter pw = new PrintWriter(address)){
@@ -87,16 +66,14 @@ public class Editor {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    public int where(){
         currentPage = firstPage;
+    }
+    public int where(){
         if(currentPage==null)
             return -1;
         else
             return currentPage.getPageNumber();
     }
-
     public void nextPage(){
         currentPage = currentPage.getNextPage();
     }
@@ -110,6 +87,7 @@ public class Editor {
         currentPage.showLines(n);
     }
     public void append(String str){
+        undos.push(deepClone(this));
         currentPage.appendText(str);
     }
     public void insert(String str, int n){
@@ -139,14 +117,45 @@ public class Editor {
         }
 
     }
+    public void undo(){
+        redos.push(deepClone(this));
+        Editor prevEditor = undos.pop();
+        firstPage = prevEditor.getFirstPage();
+        currentPage = prevEditor.getCurrentPage();
+    }
+    public void redo(){
+        Editor prevEditor = redos.pop();
+        firstPage = prevEditor.getFirstPage();
+        currentPage = prevEditor.getCurrentPage();
+    }
     private void addPage(String firstLine){
         Page newPage = new Page(firstLine, currentPage.getPageNumber()+1);
         newPage.setPrevPage(currentPage);
         currentPage.setNextPage(newPage);
         currentPage = newPage;
     }
+    public Page getFirstPage() {
+        return firstPage;
+    }
+    public Page getCurrentPage() {
+        return currentPage;
+    }
 
 
+    private Editor deepClone(Editor object){
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(object);
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(bais);
+            return (Editor) objectInputStream.readObject();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     void pp(){currentPage.pp();} //for test
 }
