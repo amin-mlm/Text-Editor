@@ -72,22 +72,34 @@ public class Editor implements Serializable{
         }
         currentPage = firstPage;
     }
-    public int where(){
+    public void where(){
         if(currentPage==null)
-            return -1;
+            System.out.println("No pages exists:(");
         else
-            return currentPage.getPageNumber();
+            System.out.println("You are on page " + currentPage.getPageNumber());
     }
     public void nextPage(){
         undos.push(deepClone(this));
-        currentPage = currentPage.getNextPage();
+        Page nextPage = currentPage.getNextPage();
+        if(nextPage==null){
+            where();
+        }else{
+            currentPage = nextPage;
+            where();
+        }
     }
     public void previousPage(){
         undos.push(deepClone(this));
-        currentPage = currentPage.getPrevPage();
+        Page prevPage = currentPage.getPrevPage();
+        if(prevPage==null){
+            where();
+        }else{
+            currentPage = prevPage;
+            where();
+        }
     }
-    public int lines(){
-        return currentPage.numOfLines;
+    public void lines(){
+        System.out.println("\"" + currentPage.getNumOfLines() + "\" lines exists in page " + currentPage.getPageNumber());
     }
     public void show(int n){
         currentPage.showLines(n);
@@ -151,7 +163,6 @@ public class Editor implements Serializable{
     public Page getCurrentPage() {
         return currentPage;
     }
-
 
     private Editor deepClone(Editor object){
         try {

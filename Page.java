@@ -7,8 +7,8 @@ public class Page implements Serializable {
     Page nextPage;
     Page prevPage;
 
-    int pageNumber;
-    int numOfLines=0;
+    private int pageNumber;
+    private int numOfLines=0;
 
 
     public Page(String line, int pageNumber) {
@@ -63,6 +63,9 @@ public class Page implements Serializable {
         return pageNumber;
     }
 
+    public int getNumOfLines() {
+        return numOfLines;
+    }
 
     public void appendText(String str) {
         currentLine = firstLine;
