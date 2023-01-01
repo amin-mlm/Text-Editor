@@ -1,4 +1,4 @@
-import java.io.Serializable;
+import java.io.*;
 
 public class Line implements Serializable {
     String text;
@@ -31,21 +31,26 @@ public class Line implements Serializable {
     public void showText() {
         System.out.println(text);
     }
-    void setText(String s){
-        text=s;
-    }
 
     public int getLineNumber() {
         return lineNumber;
     }
 
 
-    @Override
-    public Line clone() {
+    public Line deepClone(Line object){
         try {
-            return (Line) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(object);
+            ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            ObjectInputStream objectInputStream = new ObjectInputStream(bais);
+            return (Line) objectInputStream.readObject();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
+
+
 }
