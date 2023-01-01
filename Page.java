@@ -67,7 +67,7 @@ public class Page implements Serializable {
         return numOfLines;
     }
 
-    public void appendText(String str) {
+    public void appendText2(String str) {
         currentLine = firstLine;
         while(currentLine.nextLine!=null)
             currentLine = currentLine.getNextLine();
@@ -77,6 +77,30 @@ public class Page implements Serializable {
             String textLine = textScanner.nextLine();
             addLine(textLine);
         }
+    }
+
+    public void appendText(String string){
+        Scanner testScanner = new Scanner(string);
+
+        currentLine = firstLine;
+        while(currentLine.getNextLine()!=null){
+            currentLine =  currentLine.getNextLine();
+        }
+
+        String lineText = "";
+        while (testScanner.hasNext()){
+            String word = testScanner.next();
+            if(word.equals("&")){
+                if(!lineText.equals(""))
+                    addLine(lineText);
+                lineText = "";
+            }else{
+                lineText+=word + " ";
+            }
+        }
+        addLine(lineText);
+
+        System.out.println("Appended successfully.");
     }
 
     public void insertLine(String str, int n) {
@@ -93,7 +117,6 @@ public class Page implements Serializable {
             newLine.setNextLine(currentLine.getNextLine());
             currentLine.setNextLine(newLine);
         }
-//        numOfLines++;
     }
 
     public void removeLine(int n) {
@@ -126,7 +149,7 @@ public class Page implements Serializable {
 
     public void swapLines(int m, int n) {
         //make m<n
-        if(n<m){
+        if(m>n){
             int temp = m;
             m = n;
             n = temp;
@@ -141,7 +164,7 @@ public class Page implements Serializable {
         Line lineAfterN = lineN.getNextLine();
 
         if(m==1){
-            Line lineM = firstLine.clone();
+            Line lineM = firstLine.deepClone(firstLine);
 
             if(n-m==1){
                 firstLine = lineN;
@@ -174,17 +197,6 @@ public class Page implements Serializable {
                 lineBeforeN.setNextLine(lineM);
             }
         }
-        System.out.println(firstLine.getText());
-    }
-
-    void pp(){ //for test
-        currentLine = firstLine.clone();
-        currentLine.setText("vv");
-        firstLine.showText();
-
-//        currentLine = new Line(firstLine);
-
-
     }
 
     public void find(String str) {
