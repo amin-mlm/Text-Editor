@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.Scanner;
 import java.util.Stack;
@@ -9,32 +8,6 @@ public class Editor implements Serializable{
 
     Stack<Editor> undos = new Stack<>();
     Stack<Editor> redos = new Stack<>();
-
-    public void start() throws FileNotFoundException {
-//        System.out.println("You are in page " + currentPage.getPageNumber());
-//        System.out.println("No any page exists :(");
-
-        parse("in.txt");
-        save("out.text");
-
-        Scanner sc = new Scanner(System.in);
-        if(sc.nextLine().equals("1")){
-            append("aaaaaaaaaaaaaa");
-            remove(4);
-            save("out.text");
-        }
-        if(sc.nextLine().equals("2")){
-            undo();
-            insert("bbbbbbbbbbb",6 );
-            undo();
-            undo();
-            save("out.text");
-        }
-        if(sc.nextLine().equals("3")){
-            redo();
-            save("out.text");
-        }
-    }
 
     public void parse(String address) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(address));
@@ -66,11 +39,11 @@ public class Editor implements Serializable{
                 pw.println("$");
                 currentPage = currentPage.getNextPage();
             }
-            pw.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         currentPage = firstPage;
+        System.out.println("Saved successfully at \"" + address + "\".");
     }
     public void where(){
         if(currentPage==null)
@@ -99,7 +72,7 @@ public class Editor implements Serializable{
         }
     }
     public void lines(){
-        System.out.println("\"" + currentPage.getNumOfLines() + "\" lines exists in page " + currentPage.getPageNumber());
+        System.out.println("\"" + currentPage.getNumOfLines() + "\" lines exists in page " + currentPage.getPageNumber() + ".");
     }
     public void show(int n){
         currentPage.showLines(n);
@@ -133,29 +106,43 @@ public class Editor implements Serializable{
     }
     public void findAndReplace(String s, String t){
         undos.push(deepClone(this));
-        currentPage = firstPage;
-        while (currentPage!=null){
-            currentPage.findAndReplace(s,t);
-            currentPage = currentPage.getNextPage();
+        Page tempPage = firstPage;
+        while (tempPage!=null){
+            tempPage.findAndReplace(s,t);
+            tempPage = tempPage.getNextPage();
         }
 
     }
     public void undo(){
-        redos.push(deepClone(this));
-        Editor prevEditor = undos.pop();
-        firstPage = prevEditor.getFirstPage();
-        currentPage = prevEditor.getCurrentPage();
+        if(undos.isEmpty()){
+            System.out.println("No changes to undo!");
+        }else{
+            Editor prevEditor = undos.pop();
+            redos.push(deepClone(this));
+            firstPage = prevEditor.getFirstPage();
+            currentPage = prevEditor.getCurrentPage();
+            System.out.println("Changes are reverted successfully.");
+        }
     }
     public void redo(){
-        Editor prevEditor = redos.pop();
-        firstPage = prevEditor.getFirstPage();
-        currentPage = prevEditor.getCurrentPage();
+        if(undos.isEmpty()){
+            System.out.println("No changes to redo!");
+        }else {
+            Editor prevEditor = redos.pop();
+            firstPage = prevEditor.getFirstPage();
+            currentPage = prevEditor.getCurrentPage();
+            System.out.println("Changes are made again successfully.");
+        }
     }
     private void addPage(String firstLine){
         Page newPage = new Page(firstLine, currentPage.getPageNumber()+1);
         newPage.setPrevPage(currentPage);
         currentPage.setNextPage(newPage);
         currentPage = newPage;
+    }
+
+    public int getLines(){
+        return currentPage.getNumOfLines();
     }
     public Page getFirstPage() {
         return firstPage;
@@ -179,5 +166,4 @@ public class Editor implements Serializable{
         }
     }
 
-    void pp(){currentPage.pp();} //for test
 }
